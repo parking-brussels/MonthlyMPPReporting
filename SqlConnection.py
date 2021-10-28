@@ -33,12 +33,16 @@ class SQLConnection:
         except pyodbc.DatabaseError:
             raise Exception("Connection error")
 
-    def Execute(self, query):
+    def Execute(self, query, param=None):
         try:
             self.cursor = self.conn.cursor()
-            self.cursor = self.cursor.execute(query)
+            if param is None:
+                self.cursor = self.cursor.execute(query)
+            else:
+                self.cursor = self.cursor.execute(query, param)
 
-        except pyodbc.DatabaseError:
+        except pyodbc.DatabaseError as e:
+            print(e)
             raise Exception("Query execution error")
 
     def Next(self):
@@ -49,3 +53,6 @@ class SQLConnection:
         except pyodbc.DatabaseError:
             print("Fetch data from SQL server error")
             return None
+
+    def ReturnAll(self):
+        return self.cursor.fetchall()

@@ -1,21 +1,39 @@
 # Class presenting MPP
-import pyodbc as pyodbc
-import Identity
+import SqlConnection
+
+DBConn = SqlConnection.SQLConnection()
 
 
-class mpp:
-    def __init__(self,name):
+class MPPList:
+    global DBConn
+
+    def __init__(self):
+
+        DBConn.Execute("SELECT name FROM masterdata.mpp")
+        self.list = []
+        for row in DBConn.ReturnAll():
+            self.list.append(MPP(row.name))
+
+
+class MPP:
+    global DBConn
+
+    def __init__(self, name):
         self.name = name
-        self.ReadInformationFromDataBase()
+        self.info = self.ReadInformationFromDataBase()
 
     def ReadInformationFromDataBase(self):
-        target = Identity.config_access("pb_sql")
-        conn = pyodbc.connect(
-            'Driver={Driver}; Server={Server}; Database={Database}; UID={Uid}; PWD={Pwd}'.format(
-                Driver = "ODBC Driver 17 for SQL Server",
-                Server = "sv009",
-                Database = "Analytics",
-                Uid=target["Uid"],
-                Pwd=target["Pwd"]
-            )
-        )
+        DBConn.Execute("Select * from masterdata.mpp where name like ?", self.name)
+        return DBConn.Next()
+
+    def GetName(self):
+        return self.info.name
+
+    def GetEmail(self):
+        return self.info.contact_email
+
+    def GetLanguage(self):
+        return self.info.Langue
+
+    def GetFileName(self):
+        return self.info.Report_file

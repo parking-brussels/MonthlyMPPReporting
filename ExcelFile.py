@@ -1,8 +1,10 @@
 # Class to read and write Excel files
 import datetime
 from openpyxl import Workbook, load_workbook
+from office365.sharepoint.client_context import ClientContext
+
 import pandas
-from mpp import mpp as mppType
+from mpp import MPP as mppType
 
 
 class ExcelFile:
@@ -12,7 +14,8 @@ class ExcelFile:
 
     # Open Excel
     def __init__(self, mpp):
-        self.wb = load_workbook(mpp.filename)
+        filename = mpp.GetFileName()
+        self.wb = load_workbook(filename)
 
     # Add sheet for month (default last month)
     def AddWorkSheet(self, date=Month):
@@ -25,3 +28,4 @@ class ExcelFile:
 
 # main script
 if __name__ == '__main__':
+    pass
