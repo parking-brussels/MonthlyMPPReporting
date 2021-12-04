@@ -1,7 +1,8 @@
 import pyodbc
-import Identity
 from pandas import read_sql, DataFrame
-from pyodbc import Cursor, Connection, Row
+from pyodbc import Connection
+
+import Identity
 
 
 class SQLConnection:
