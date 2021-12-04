@@ -11,8 +11,9 @@ class MPPList:
 
         DBConn.Execute("SELECT name FROM masterdata.mpp")
         self.list = []
-        for row in DBConn.ReturnAll():
-            self.list.append(MPP(row.name))
+        df = DBConn.ReturnAll()
+        for mppName in df['name']:
+            self.list.append(MPP(mppName))
 
 
 class MPP:
@@ -23,17 +24,21 @@ class MPP:
         self.info = self.ReadInformationFromDataBase()
 
     def ReadInformationFromDataBase(self):
-        DBConn.Execute("Select * from masterdata.mpp where name like ?", self.name)
+        DBConn.Execute("Select * from masterdata.mpp where name like ?", {self.name})
         return DBConn.Next()
 
     def GetName(self):
-        return self.info.name
+        return self.info['name']
 
     def GetEmail(self):
-        return self.info.contact_email
+        return self.info['contact_email']
 
     def GetLanguage(self):
-        return self.info.Langue
+        return self.info['Langue']
 
     def GetFileName(self):
-        return self.info.Report_file
+        return self.info['Report_file']
+
+    def GetTransactions(self, month):
+        DBConn.Execute("EXEC staging.Monthly_Report_MPP @MPP=?, @Date=?", (self.info.flowbird_name, month))
+        return DBConn.ReturnAll()

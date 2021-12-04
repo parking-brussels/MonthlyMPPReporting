@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
 
         except Exception:
             print(Exception)
-            self.assert_(False, "Error testing TestConnection")
+            self.assertTrue(False, "Error testing TestConnection")
 
 
 if __name__ == '__main__':

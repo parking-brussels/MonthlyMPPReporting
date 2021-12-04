@@ -1,15 +1,16 @@
 import pyodbc
-from pyodbc import Cursor, Connection, Row
-
 import Identity
+from pandas import read_sql, DataFrame
+from pyodbc import Cursor, Connection, Row
 
 
 class SQLConnection:
-    cursor: Cursor
+    data: DataFrame
     conn: Connection
-    row: Row
+    row: int
 
     def __init__(self):
+        self.row = -1
         self.target = {
             "pb_sql": {
                 "Driver": "ODBC Driver 17 for SQL Server",
@@ -34,25 +35,24 @@ class SQLConnection:
             raise Exception("Connection error")
 
     def Execute(self, query, param=None):
+        self.row = 0
         try:
-            self.cursor = self.conn.cursor()
             if param is None:
-                self.cursor = self.cursor.execute(query)
+                self.data = read_sql(query, self.conn)
             else:
-                self.cursor = self.cursor.execute(query, param)
+                self.data = read_sql(query, self.conn, params=param)
 
         except pyodbc.DatabaseError as e:
             print(e)
             raise Exception("Query execution error")
 
     def Next(self):
-        try:
-            row = self.cursor.fetchone()
-            return row
-
-        except pyodbc.DatabaseError:
-            print("Fetch data from SQL server error")
-            return None
+        rowData = self.data.iloc[self.row]
+        self.row += 1
+        return rowData
 
     def ReturnAll(self):
-        return self.cursor.fetchall()
+        return self.data
+
+    def Reset(self):
+        self.row = 0
