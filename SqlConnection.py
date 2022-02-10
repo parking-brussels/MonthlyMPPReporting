@@ -52,6 +52,9 @@ class SQLConnection:
         self.row += 1
         return rowData
 
+    def Count(self):
+        return self.data.count()
+
     def ReturnAll(self):
         return self.data
 

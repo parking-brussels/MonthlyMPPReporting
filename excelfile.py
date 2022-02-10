@@ -36,7 +36,7 @@ class ExcelFile:
             sheet = self.AddWorkSheet()
 
         # Get data and put into sheet
-        df: pandas.DataFrame = self.mpp.GetTransactions(month=self.Month)
+        df: pandas.DataFrame = self.mpp.GetTransactions()
 
         # Format table
         self.FormatTable(sheet)
@@ -66,7 +66,7 @@ class ExcelFile:
                 headers.append({'header': col,
                                 'total_function': 'sum'})
 
-        sheet.add_table(0, 0, rows, cols - 1,
+        sheet.add_table(0, 0, rows + 1, cols - 1,
                         {
                             'name': tableName,
                             'data': data,

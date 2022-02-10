@@ -1,85 +1,82 @@
-import random
+
 import smtplib
-import base64
-import string
+from os.path import basename
 from typing import List
 from bs4 import BeautifulSoup
+from email.message import EmailMessage
+from email.headerregistry import Address
+from email.utils import make_msgid
+
 
 
 class Mail:
-    receiver: str
     text: str
     attachments: List[str]
+    message: EmailMessage
     html: str
-    sender: str = 'ict@parking.brussels'
     marker: str
-    body: str = None
 
-    def __init__(self, email: str, attachments: List[str], _body: str = None, _text: str = None):
-        self.receiver = email
-        self.attachments = attachments
+
+    def __init__(self,
+                 _email: str,
+                 _attachments: List[str],
+                 _body: str = None,
+                 _text: str = None,
+                 _subject: str = None,
+                 _cc: str = None,
+                 _bcc: str = None):
+
+        self.EmailMessage = EmailMessage()
+        self.EmailMessage['To'] = _email
+        if _bcc is not None:
+            self.EmailMessage['BCC'] = _bcc
+        if _cc is not None:
+            self.EmailMessage['CC'] = _cc
+        if _subject is not None:
+            self.EmailMessage['Subject'] = _subject
+        self.attachments = _attachments
         self.html = _body
-        self.marker = ''.join(random.choice(string.ascii_letters) for _ in range(10))
+        self.marker = make_msgid()
         if _text is not None:
             self.text = _text
         else:
             self.text = self.convertBodyToText(_body)
 
+
     def send(self):
-        self.createHeader()
         self.addBody()
         for fileName in self.attachments:
             self.addFileToMail(fileName)
-        # Add endmarker
-        self.body += """--
-"""
         try:
-            smtpObj = smtplib.SMTP('relay.irisnet.be')
-            smtpObj.sendmail(self.sender, self.receiver, self.body)
+            smtpObj = smtplib.SMTP('localhost')
+            smtpObj.send_message(self.EmailMessage)
         except Exception as e:
             raise Exception("Error sending mail %s" % (str(e)))
+        return self
 
-    def createHeader(self):
-        # if body is not empty header will not be at the beginning => raise exception
-        if self.body is not None:
-            raise Exception("Mail header build on top of existing body")
 
-        self.body = """
-From: %s
-To: %s
-Subject: 
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary= %s
---%s
-""" % (self.sender, self.receiver, self.marker, self.marker)
+    def setSender(self, _user, _email):
+        self.EmailMessage['From'] = Address(_user, addr_spec=_email)
+        return self
+
 
     @staticmethod
     def convertBodyToText(HTMLtext: str):
         soup = BeautifulSoup(HTMLtext, features="html.parser")
         return soup.get_text('\n')
 
-    def addFileToMail(self, _filename: str):
-        file = open(_filename, "rb")
-        encodedcontent = base64.b64encode(file.read())
-        self.body += """
-Content-Type: multipart/mixed; name=\"%s\"
-Content-Transfer-Encoding:base64
-Content-Disposition: attachment; filename=%s
 
-%s
---%s""" % (_filename, _filename, encodedcontent, self.marker)
+    def addFileToMail(self, _filename: str):
+        with open(_filename, "rb") as file:
+            self.EmailMessage.add_attachment(file.read(),
+                                             maintype="application",
+                                             subtype="cnd.ms-excel",
+                                             filename=basename(_filename))
+        return self
+
 
     def addBody(self):
-        self.body += """
-Content-Type: text/plain
-Content-Transfer-Encoding:8bit
-
-%s
---%s""" % (self.text, self.marker)
+        self.EmailMessage.set_content(self.text)
         if self.html is not None:
-            self.body += """
-Content-Type: text/html; charset=UTF-8
-
-
-%s
---%s""" % (self.html, self.marker)
+            self.EmailMessage.add_alternative(self.html, subtype='html')
+        return self
