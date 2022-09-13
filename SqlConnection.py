@@ -1,6 +1,7 @@
 import pyodbc
 from pandas import read_sql, DataFrame
 from pyodbc import Connection
+import sqlalchemy
 
 import Identity
 
@@ -15,6 +16,7 @@ class SQLConnection:
         self.target = {
             "pb_sql": {
                 "Driver": "ODBC Driver 17 for SQL Server",
+                # "Driver" : "SQL Server",
                 "Server": "sv009",
                 "Uid": "***",
                 "Pwd": "{***}"  # needs to be specified
@@ -22,15 +24,23 @@ class SQLConnection:
         }
         Identity.config_access(self.target)
         try:
-            self.conn = pyodbc.connect(
-                'Driver={Driver}; Server={Server}; Database={Database}; UID={Uid}; PWD={Pwd}'.format(
-                    Driver=self.target["pb_sql"]["Driver"],
-                    Server=self.target["pb_sql"]["Server"],
-                    Database="Analytics",
-                    Uid=self.target["pb_sql"]["Uid"],
-                    Pwd=self.target["pb_sql"]["Pwd"]
-                )
-            )
+            self.conn = sqlalchemy.create_engine('mssql+pyodbc://{Uid}:{Pwd}@{Server}/{Database}?driver={Driver}'.format(
+                Uid=self.target["pb_sql"]["Uid"],
+                Pwd=self.target["pb_sql"]["Pwd"],
+                Database="Analytics",
+                Server=self.target["pb_sql"]["Server"],
+                Driver=self.target["pb_sql"]["Driver"]
+            )).connect()
+
+            # self.conn = pyodbc.connect(
+            #     'Driver={Driver}; Server={Server}; Database={Database}; UID={Uid}; PWD={Pwd}'.format(
+            #         Driver=self.target["pb_sql"]["Driver"],
+            #         Server=self.target["pb_sql"]["Server"],
+            #         Database="Analytics",
+            #         Uid=self.target["pb_sql"]["Uid"],
+            #         Pwd=self.target["pb_sql"]["Pwd"]
+            #     )
+            # )
 
         except pyodbc.DatabaseError:
             raise Exception("Connection error")
