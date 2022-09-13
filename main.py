@@ -1,3 +1,4 @@
+#!/opt/scripts/bin/launch.sh -e mpp
 # Script to create and send monthly MPP reports to the MPP
 
 # main script

@@ -17,7 +17,7 @@ class ExcelFile:
     def __init__(self, mpp: MPP):
         self.mpp = mpp
         self.sheet = None
-        self.filename = 'C:\\Users\\kcox\\Downloads\\MPP invoices\\' \
+        self.filename = '/opt/scripts/mpp/tmp/' \
                         + self.Month.strftime("%Y%m") \
                         + self.mpp.GetFileName()
         self.wb = xlsxwriter.Workbook(self.filename)
