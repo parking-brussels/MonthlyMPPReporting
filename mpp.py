@@ -18,7 +18,8 @@ class MPPList:
 
         DBConn.Execute("SELECT distinct name FROM masterdata.mpp "
                        "WHERE (date_from < ? or date_from IS NULL) "
-                       "AND (date_until > ? or date_until IS NULL) ", (month, lastday))
+                       "AND (date_until > ? or date_until IS NULL) "
+                       "AND PCC_code IS NOT NULL", (month, lastday))
         self.list = []
         df = DBConn.ReturnAll()
         for mppName in df['name']:
@@ -44,7 +45,8 @@ class MPP:
                        "from masterdata.mpp "
                        "where name like ? "
                        "and (date_until > ? or date_until is null)"
-                       "and (date_from < ? or date_from is null)", (self.name, self.month, self.lastDay))
+                       "and (date_from < ? or date_from is null)"
+                       "and PCC_code IS NOT NULL", (self.name, self.month, self.lastDay))
         return DBConn.Next()
 
 

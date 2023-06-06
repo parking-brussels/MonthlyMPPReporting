@@ -17,6 +17,7 @@ class ExcelFile:
     def __init__(self, mpp: MPP):
         self.mpp = mpp
         self.sheet = None
+        #self.filename = 'C:\\Users\\kcox.PBRUSSELS\\AppData\\Local\\Temp\\' \
         self.filename = '/opt/scripts/mpp/tmp/' \
                         + self.Month.strftime("%Y%m") \
                         + self.mpp.GetFileName()
@@ -45,7 +46,7 @@ class ExcelFile:
 
         (rows, cols) = df.shape
         if '4411' == self.mpp.name:
-            cols = 12
+            cols = 8
         else:
             cols = 6
 
@@ -81,15 +82,13 @@ class ExcelFile:
     # Add table to document and format columns
     def FormatTable(self, sheet: worksheet):
         currency_format = self.wb.add_format({'num_format': '#,##0.00 €;-#,##0.00 €'})
-        percentage_format = self.wb.add_format({'num_format': '0%'})
         number_format = self.wb.add_format({'num_format': '0'})
 
         # format columns
         sheet.set_column('A:D', 12, number_format)
         sheet.set_column('E:E', 12, currency_format)
         sheet.set_column('F:F', 25, number_format)
-        sheet.set_column('G:K', 12, currency_format)
-        sheet.set_column('L:L', 12, percentage_format)
+        sheet.set_column('G:H', 12, currency_format)
 
 
 # main script
