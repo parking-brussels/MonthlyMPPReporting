@@ -45,14 +45,14 @@ if __name__ == '__main__':
 
     # First day of previous month
     # Calculated as beginning of this month minus 1 day, and take first day of that month)
-    Month = (datetime.date.today().replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
+    Month = (datetime.date.today().replace(day=1) - datetime.timedelta(days=32)).replace(day=1)
 
     for mpp in MPPList(Month).list:
         file = ExcelFile(mpp)
         file.AddData()
-        Mail(_email=mpp.GetEmail(),
-             _attachments=[file.filename],
-             _body=createBody(),
-             _subject="Overview of the tickets of last month",
-             _bcc="kcox@parking.brussels",
-             ).setSender("ICT-service", "ict@parking.brussels").send()
+        # Mail(_email=mpp.GetEmail(),
+        #      _attachments=[file.filename],
+        #      _body=createBody(),
+        #      _subject="Overview of the tickets of last month",
+        #      _bcc="kcox@parking.brussels",
+        #      ).setSender("ICT-service", "ict@parking.brussels").send()

@@ -16,7 +16,6 @@ class SQLConnection:
         self.target = {
             "pb_sql": {
                 "Driver": "ODBC Driver 17 for SQL Server",
-                # "Driver" : "SQL Server",
                 "Server": "sv009",
                 "Uid": "***",
                 "Pwd": "{***}"  # needs to be specified

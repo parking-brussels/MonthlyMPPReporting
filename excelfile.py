@@ -11,14 +11,14 @@ from mpp import MPP
 class ExcelFile:
     # First day of previous month
     # Calculated as beginning of this month minus 1 day, and take first day of that month)
-    Month = (datetime.date.today().replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
+    Month = (datetime.date.today().replace(day=1) - datetime.timedelta(days=32)).replace(day=1)
 
     # Open Excel
     def __init__(self, mpp: MPP):
         self.mpp = mpp
         self.sheet = None
-        #self.filename = 'C:\\Users\\kcox.PBRUSSELS\\AppData\\Local\\Temp\\' \
-        self.filename = '/opt/scripts/mpp/tmp/' \
+        #self.filename = '/opt/scripts/mpp/tmp/' \
+        self.filename = 'C:\\Users\\kcox.PBRUSSELS\\AppData\\Local\\Temp\\' \
                         + self.Month.strftime("%Y%m") \
                         + self.mpp.GetFileName()
         self.wb = xlsxwriter.Workbook(self.filename)
