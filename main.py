@@ -19,7 +19,7 @@ def createBody():
 	<p> Regards, </p>
 	<p class=MsoNormal>
 		<b>
-			<span lang=NL-BE style='color:#1F497D;mso-fareast-language:FR-BE'>Kris Cox<o:p/>
+			<span lang=NL-BE style='color:#1F497D;mso-fareast-language:FR-BE'>Vincent De Bie<o:p/>
 			</span>
 		</b>
 	</p>
@@ -31,8 +31,8 @@ def createBody():
 	</p>
 	<p class=MsoNormal>
 		<span lang=FR-BE style='color:#1F497D;mso-fareast-language:NL-BE'>
-			<a href="mailto:kcox@parking.brussels">
-				<span style='color:#1F497D'>kcox@parking.brussels</span>
+			<a href="mailto:vdebie@parking.brussels">
+				<span style='color:#1F497D'>vdebie@parking.brussels</span>
 			</a>
 			<o:p/>
 		</span>
@@ -54,5 +54,5 @@ if __name__ == '__main__':
              _attachments=[file.filename],
              _body=createBody(),
              _subject="Overview of the tickets of last month",
-             _bcc="kcox@parking.brussels",
+             _bcc="vdebie@parking.brussels",
              ).setSender("ICT-service", "ict@parking.brussels").send()
