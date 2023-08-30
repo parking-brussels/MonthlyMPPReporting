@@ -67,5 +67,5 @@ class MPP:
 
 
     def GetTransactions(self):
-        DBConn.Execute("EXEC staging.Monthly_Report_MPP @MPP=?, @Date=?", (self.info.flowbird_name, self.month))
+        DBConn.Execute("EXEC staging.Monthly_Report_MPP @MPP=?, @Date=?", (self.info.PCC_code, self.month))
         return DBConn.ReturnAll()
