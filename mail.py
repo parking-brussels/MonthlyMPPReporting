@@ -48,7 +48,7 @@ class Mail:
         for fileName in self.attachments:
             self.addFileToMail(fileName)
         try:
-            smtpObj = smtplib.SMTP('localhost')
+            smtpObj = smtplib.SMTP('sv003.pbrussels.lan')
             smtpObj.send_message(self.EmailMessage)
         except Exception as e:
             raise Exception("Error sending mail %s" % (str(e)))
